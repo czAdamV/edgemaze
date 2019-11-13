@@ -1,4 +1,5 @@
-from collections import deque
+from libcpp.deque cimport deque
+from libcpp.pair cimport pair
 from operator import add
 import numpy
 
@@ -75,8 +76,9 @@ def neighbours(maze, tile):
     return ret
 
 
-def step_flood(maze, distances, directions, queue):
-    current = queue.popleft()
+cdef step_flood(maze, distances, directions, deque[pair[int, int]] &queue):
+    current = queue.front()
+    queue.pop_front()
 
     for next, direction in neighbours(maze, current):
         if distances[next] != -1:
@@ -85,10 +87,12 @@ def step_flood(maze, distances, directions, queue):
         distances[next] = distances[current] + 1
         directions[next] = direction
 
-        queue.append(next)
+        queue.push_back(next)
 
 
 def analyze(maze):
+    cdef deque[pair[int, int]] flood_queue
+
     if maze.ndim != 2:
         raise TypeError(f'Maze dimension must be two, {maze.ndim} given.')
 
@@ -98,15 +102,13 @@ def analyze(maze):
     distances = numpy.full_like(maze, -1, dtype=numpy.int64)
     directions = numpy.full_like(maze, b' ', dtype=('a', 1))
 
-    flood_queue = deque()
-
     for target in maze_tarets(maze):
         distances[target] = 0
         directions[target] = b'X'
 
-        flood_queue.append(target)
+        flood_queue.push_back(target)
 
-    while flood_queue:
+    while not flood_queue.empty():
         step_flood(maze, distances, directions, flood_queue)
 
     return Solution(distances, directions, numpy.all(distances != -1))
