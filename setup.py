@@ -1,4 +1,6 @@
 from setuptools import setup, find_packages
+from Cython.Build import cythonize
+import numpy
 
 
 with open('readme.md') as f:
@@ -7,7 +9,7 @@ with open('readme.md') as f:
 
 setup(
     name='edgemaze',
-    version='0.1',
+    version='0.2',
     description='A simple maze solving library.',
     long_description=long_description,
     author='Adam Volek',
@@ -15,7 +17,13 @@ setup(
     license='Public Domain',
     keywords='maze,path-finding',
     url='https://github.com/czAdamV/edgemaze',
+    ext_modules=cythonize([
+        'edgemaze/edgemaze.pyx',
+        'edgemaze/__init__.pyx'
+    ], language_level=3, language='c++'),
+    include_dirs=[numpy.get_include()],
     packages=find_packages(),
+    setup_requires=['Cython', 'NumPy'],
     install_requires=['numpy'],
     zip_safe=False,
 )
