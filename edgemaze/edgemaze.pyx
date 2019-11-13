@@ -2,6 +2,7 @@ from libcpp.deque cimport deque
 from libcpp.pair cimport pair
 from operator import add
 import numpy
+cimport numpy
 
 
 class PathIterator:
@@ -76,7 +77,12 @@ def neighbours(maze, tile):
     return ret
 
 
-cdef step_flood(maze, distances, directions, deque[pair[int, int]] &queue):
+cdef step_flood(
+    numpy.ndarray[numpy.int8_t, ndim=2] maze,
+    numpy.ndarray[numpy.int64_t, ndim=2] distances,
+    numpy.ndarray[numpy.int8_t, ndim=2] directions,
+    deque[pair[int, int]] &queue
+):
     current = queue.front()
     queue.pop_front()
 
@@ -92,6 +98,9 @@ cdef step_flood(maze, distances, directions, deque[pair[int, int]] &queue):
 
 def analyze(maze):
     cdef deque[pair[int, int]] flood_queue
+    cdef numpy.ndarray[numpy.int64_t, ndim=2] distances
+    cdef numpy.ndarray[numpy.int8_t, ndim=2] directions
+    cdef numpy.ndarray[numpy.int8_t, ndim=2] maze_int
 
     if maze.ndim != 2:
         raise TypeError(f'Maze dimension must be two, {maze.ndim} given.')
@@ -101,14 +110,15 @@ def analyze(maze):
 
     distances = numpy.full_like(maze, -1, dtype=numpy.int64)
     directions = numpy.full_like(maze, b' ', dtype=('a', 1))
+    maze_int = maze.astype(dtype=numpy.int8)
 
-    for target in maze_tarets(maze):
+    for target in maze_tarets(maze_int):
         distances[target] = 0
         directions[target] = b'X'
 
         flood_queue.push_back(target)
 
     while not flood_queue.empty():
-        step_flood(maze, distances, directions, flood_queue)
+        step_flood(maze_int, distances, directions, flood_queue)
 
     return Solution(distances, directions, numpy.all(distances != -1))
