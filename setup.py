@@ -10,7 +10,7 @@ with open('readme.md') as f:
 setup(
     name='edgemaze',
     version='0.2',
-    description='A simple maze solving library.',
+    description='A simple maze solving library and app.',
     long_description=long_description,
     author='Adam Volek',
     author_email='volekada@fit.cvut.cz',
@@ -21,9 +21,14 @@ setup(
         'edgemaze/edgemaze.pyx',
         'edgemaze/__init__.pyx'
     ], language_level=3, language='c++'),
+    entry_points={
+        'console_scripts': [
+            'edgemaze-gui = edgemaze:main',
+        ],
+    },
     include_dirs=[numpy.get_include()],
     packages=find_packages(),
-    setup_requires=['Cython', 'NumPy'],
+    setup_requires=['Cython', 'NumPy', 'PyQt5'],
     install_requires=['numpy'],
     zip_safe=False,
 )

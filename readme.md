@@ -1,3 +1,3 @@
 # Edgemaze
 
-A simple maze solving library.
+A simple maze solving library and app.
