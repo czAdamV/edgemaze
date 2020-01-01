@@ -9,7 +9,7 @@ with open('readme.md') as f:
 
 setup(
     name='edgemaze',
-    version='0.2',
+    version='0.3',
     description='A simple maze solving library and app.',
     long_description=long_description,
     author='Adam Volek',
