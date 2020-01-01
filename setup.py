@@ -14,7 +14,7 @@ setup(
     long_description=long_description,
     author='Adam Volek',
     author_email='volekada@fit.cvut.cz',
-    license='Public Domain',
+    license='GNU GPL v3',
     keywords='maze,path-finding',
     url='https://github.com/czAdamV/edgemaze',
     ext_modules=cythonize([
