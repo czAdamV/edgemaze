@@ -28,7 +28,7 @@ setup(
     },
     include_dirs=[numpy.get_include()],
     packages=find_packages(),
-    setup_requires=['Cython', 'NumPy', 'PyQt5'],
-    install_requires=['numpy'],
+    setup_requires=['Cython', 'NumPy'],
+    install_requires=['numpy', 'PyQt5'],
     zip_safe=False,
 )
